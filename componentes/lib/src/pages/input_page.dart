@@ -9,7 +9,9 @@ class _InputPageState extends State<InputPage> {
   String _nombre = ''; 
   String _email = '' ;
   String _fecha = '' ; 
-  String _password = '' ; 
+  String _opcionSeleccionada = 'volar' ; 
+  List<String> _poderes = ['volar','vision','super fuerza'];
+
   TextEditingController _inputFieldDateController = new TextEditingController();
 
   @override
@@ -28,6 +30,8 @@ class _InputPageState extends State<InputPage> {
            _crearPassword(),
            Divider(),
            _crearFecha(context),
+            Divider(),
+           _crearDropdown(),
            Divider(),
            _crearPersona(),
 
@@ -58,7 +62,7 @@ class _InputPageState extends State<InputPage> {
    );
  }
 
-  _crearEmail(){
+  Widget _crearEmail(){
       return TextField(
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
@@ -76,7 +80,7 @@ class _InputPageState extends State<InputPage> {
    );
   }
 
-  _crearPassword() {
+  Widget _crearPassword() {
     return TextField(
       obscureText: true,
      decoration: InputDecoration(
@@ -88,9 +92,6 @@ class _InputPageState extends State<InputPage> {
        suffixIcon: Icon(Icons.lock_open),
        icon: Icon(Icons.lock)
      ),
-     onChanged: (valor){
-       setState(() =>_password = valor); 
-     },
    );
   }
 
@@ -114,7 +115,6 @@ class _InputPageState extends State<InputPage> {
     },
    );
   }
-
   
   Future _selectDate(BuildContext context) async {
     DateTime picked = await showDatePicker(
@@ -133,10 +133,40 @@ class _InputPageState extends State<InputPage> {
     }
   }
 
+  List<DropdownMenuItem<String>> getOpcionesDropdown(){
+    List<DropdownMenuItem<String>> lista = new List();
+  _poderes.forEach((poder){
+    lista.add(DropdownMenuItem(
+      child: Text(poder),
+      value: poder,
+    ));
+  });
+  return lista;
+  }
+  Widget _crearDropdown() {
+
+    return Row(
+      children: <Widget>[
+      Icon(Icons.select_all),
+      SizedBox(width: 30.0,),
+      DropdownButton(
+        value: _opcionSeleccionada,
+        items: getOpcionesDropdown(),
+        onChanged: (opt) {
+          setState(() {
+          _opcionSeleccionada = opt; 
+          });
+        },
+    )
+      ],
+    );
+  }
+
   Widget _crearPersona() {
    return ListTile(
      title: Text('Nombre es: $_nombre'),
      subtitle: Text('Email: $_email'),
+     trailing: Text(_opcionSeleccionada),
      );
  }
 
